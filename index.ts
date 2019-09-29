@@ -13,12 +13,12 @@ export class ParallelTransform extends Transform {
   private _destroyed: boolean;
   private _maxParallel: number;
   private _ontransform: OnTransformFn;
-  private _flushed: boolean;
+  private _finishing: boolean;
   private _ordered: boolean;
   private _buffer: Cyclist<any> | Array<any>;
   private _top: number;
   private _bottom: number;
-  private _ondrain: null | Function;
+  private ondrain: null | Function;
 
   constructor(
       maxParallel: number,
@@ -36,12 +36,12 @@ export class ParallelTransform extends Transform {
     this._destroyed = false;
     this._maxParallel = maxParallel;
     this._ontransform = ontransform;
-    this._flushed = false;
+    this._finishing = false;
     this._ordered = opts.ordered !== false;
     this._buffer = this._ordered ? cyclist(maxParallel) : [];
     this._top = 0;
     this._bottom = 0;
-    this._ondrain = null;
+    this.ondrain = null;
   }
 
   destroy(err?: Error | undefined, callback?: ((error: Error | null) => void) | undefined): this {
@@ -71,12 +71,12 @@ export class ParallelTransform extends Transform {
     });
 
     if (this._top - this._bottom < this._maxParallel) return callback();
-    this._ondrain = callback;
+    this.ondrain = callback;
   }
 
-  _flush(callback) {
-    this._flushed = true;
-    this._ondrain = callback;
+  _final(callback) {
+    this._finishing = true;
+    this.ondrain = callback;
     this._drain();
   }
 
@@ -96,16 +96,16 @@ export class ParallelTransform extends Transform {
       }
     }
 
-    if (!this._drained() || !this._ondrain) return;
+    if (!this._drained() || !this.ondrain) return;
 
-    const ondrain = this._ondrain;
-    this._ondrain = null;
+    const ondrain = this.ondrain;
+    this.ondrain = null;
     ondrain();
   };
 
   _drained() {
     const diff = this._top - this._bottom;
-    return this._flushed ? !diff : diff < this._maxParallel;
+    return this._finishing ? !diff : diff < this._maxParallel;
   }
 }
 

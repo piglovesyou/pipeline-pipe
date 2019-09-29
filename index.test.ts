@@ -4,7 +4,7 @@ import { pipeline, Readable, Transform } from 'readable-stream';
 import transform from './index';
 
 describe('transform', () => {
-  it('should emit pipeline callback with sync function', async () => {
+  it('should emit pipeline callback with synchronous stream ', async () => {
     const expected = [ 2, 3, 4, 5, 6 ];
     const actual: number[] = [];
 
@@ -32,7 +32,7 @@ describe('transform', () => {
     assert.deepStrictEqual(actual, expected);
   }, 10 * 1000);
 
-  it.skip('should emit pipeline callback with async function', async () => {
+  it('should emit pipeline callback with asynchronous stream', async () => {
     const expected = [ 2, 3, 4, 5, 6 ];
     const actual: number[] = [];
 
@@ -61,6 +61,34 @@ describe('transform', () => {
 
     assert.deepStrictEqual(actual, expected);
   }, 10 * 1000);
+
+  it('should fix mafintosh/parallel-transform##4, emit "finish" after all buffer is consumed', async () => {
+    const expectedArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const actualArray: number[] = [];
+    let finished = false;
+
+    await new Promise(resolve => {
+      const stream = transform(10, function (data, callback) {
+        setTimeout(function () {
+          actualArray.push(data);
+          callback(undefined, data);
+        }, data );
+      });
+
+      for (let i = 0; i < 10; i++) {
+        stream.write(i);
+      }
+      stream.end();
+
+      stream.on('finish', function () {
+        assert.deepStrictEqual(actualArray, expectedArray);
+        finished = true;
+        resolve();
+      });
+    });
+
+    assert(finished);
+  });
 
   it('should run in parallel', async () => {
     const acceptableOffset = 200;
