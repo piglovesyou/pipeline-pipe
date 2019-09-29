@@ -1,4 +1,4 @@
-import { Transform, TransformOptions, WritableOptions } from "readable-stream";
+import { Transform, TransformOptions } from "readable-stream";
 import cyclist, { Cyclist } from "cyclist";
 
 type ParallelTransformOpitons = TransformOptions & {
@@ -6,8 +6,6 @@ type ParallelTransformOpitons = TransformOptions & {
 };
 
 type OnTransformFn = (data: any, callback: (error?: Error, data?: any) => void) => void;
-
-module.exports = transform;
 
 export class ParallelTransform extends Transform {
   private _destroyed: boolean;
@@ -125,3 +123,6 @@ export default function transform(
   }
   throw new Error('Wrong arugment passed');
 }
+
+module.exports = transform;
+module.exports.ParallelTransform = ParallelTransform;
