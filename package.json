@@ -1,6 +1,6 @@
 {
   "name": "@piglovesyou/parallel-transform",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "types": "./index.d.ts",
   "repository": "git@github.com:piglovesyou/parallel-transform.git",
   "license": "MIT",
