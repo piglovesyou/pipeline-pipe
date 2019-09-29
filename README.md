@@ -3,6 +3,7 @@
 This is a maintained version of [parallel-transform](https://github.com/mafintosh/parallel-transform) which includes:
 
 * TypeScript Definition (with purely rewritten in TypeScript implementation)
+* Fix mafintosh/parallel-transform#4 ; It works well in `require('stream').pipeline`
 
 ----
 
