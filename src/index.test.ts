@@ -1,8 +1,6 @@
 import assert from 'assert';
-import { pipeline, Readable, Transform } from 'readable-stream';
-// @ts-ignore
-import transform from './index';
-import requireActual = jest.requireActual;
+import { pipeline, Readable } from 'readable-stream';
+import pipe from './index';
 
 describe('transform', () => {
   it('should emit pipeline callback with synchronous stream ', async () => {
@@ -19,9 +17,8 @@ describe('transform', () => {
       });
       pipeline(
           readable,
-          transform(10, function (n, callback) {
+          pipe(function (n) {
             actual.push(n);
-            callback();
           }),
           (err) => {
             if (err) return reject(err);
@@ -47,12 +44,14 @@ describe('transform', () => {
       });
       pipeline(
           readable,
-          transform(10, function (n, callback) {
-            setTimeout(() => {
-              actual.push(n);
-              callback();
-            }, n);
-          }),
+          pipe(function (n) {
+            return new Promise(resolve => {
+              setTimeout(() => {
+                actual.push(n);
+                resolve();
+              }, n);
+            });
+          }, 10),
           (err) => {
             if (err) return reject(err);
             resolve();
@@ -69,12 +68,14 @@ describe('transform', () => {
     let finished = false;
 
     await new Promise(resolve => {
-      const stream = transform(10, function (data, callback) {
-        setTimeout(function () {
-          actualArray.push(data);
-          callback(undefined, data);
-        }, data);
-      });
+      const stream = pipe(function (data) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            actualArray.push(data);
+            resolve(data);
+          }, data);
+        });
+      }, 10);
 
       for (let i = 0; i < 10; i++) {
         stream.write(i);
@@ -100,11 +101,14 @@ describe('transform', () => {
 
     await new Promise(resolve => {
       const start = Date.now();
-      const stream = transform(10, function (data, callback) { // 10 is the parallism level
-        setTimeout(function () {
-          callback(undefined, data);
-        }, 1000);
-      });
+      const stream = pipe(function (data) { // 10 is the parallism level
+        return new Promise(
+            (resolve) => setTimeout(
+                () => resolve(data),
+                1000
+            )
+        );
+      }, 10);
 
       for (let i = 0; i < 10; i++) {
         stream.write(i);
@@ -138,19 +142,20 @@ describe('transform', () => {
           }
           this.push(null);
         }
-      }).pipe(transform(10, (n: number, callback) => {
+      }).pipe(pipe((n: number) => {
         if (n % 2 === 0) {
-          setTimeout(() => {
-            callback(undefined, n);
-          }, n);
-          return;
+          return new Promise(
+              resolve => setTimeout(
+                  () => resolve(n),
+                  n
+              )
+          );
         }
-        callback();
-      })).pipe(transform(10, (n: number, callback) => {
-        callback(undefined, String(n * 10));
-      })).pipe(transform(10, (s: string, callback) => {
+        return;
+      })).pipe(pipe((n: number) => {
+        return String(n * 10);
+      })).pipe(pipe((s: string) => {
         actual.push(s);
-        callback();
       })).on('finish', resolve);
     });
     assert.deepStrictEqual(actual, expected);
@@ -161,7 +166,7 @@ describe('transform', () => {
     let actual = 0;
     await new Promise(resolve => {
       let i = 0;
-      const r = new Readable({
+      new Readable({
         objectMode: true,
         read(size: number): void {
           for (; ;) {
@@ -170,19 +175,23 @@ describe('transform', () => {
             if (pushed === false) return;
           }
         }
-      });
-      r.pipe(transform(10, (data: string, callback) => {
-        setTimeout(() => {
-          callback(undefined, data + 'b');
-        }, Math.random() * 4);
-      })).pipe(transform(10, (data: string, callback) => {
-        setTimeout(() => {
-          assert.deepStrictEqual(data.length, 2);
-          actual++;
-          callback();
-        }, Math.random() * 4);
-      })).on('finish', resolve);
+      })
+          .pipe(pipe(async (data: string) => {
+                await timeout(Math.random() * 4);
+                return data + 'b';
+              }, 10)
+          )
+          .pipe(pipe(async (data: string) => {
+                await timeout(Math.random() * 4);
+                assert.deepStrictEqual(data, 'ab');
+                actual++;
+              }, 10)
+          ).on('finish', resolve);
     });
     assert.deepStrictEqual(actual, expected);
   }, 60 * 1000);
 });
+
+function timeout(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
