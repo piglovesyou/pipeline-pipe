@@ -23,15 +23,31 @@
   },
   "devDependencies": {
     "@types/inherits": "^0.0.30",
-    "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.8",
-    "@types/readable-stream": "^2.3.4",
+    "@types/jest": "^24.0.19",
+    "@types/node": "^12.11.1",
+    "@types/readable-stream": "^2.3.5",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.6.3"
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "npm run fix-js",
+      "git add --force"
+    ]
   },
   "scripts": {
+    "fix": "yarn run lint-js --fix",
+    "lint": "eslint --ext .ts --ext .tsx --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
     "prepack": "tsc --declaration",
-    "test": "tsc --noEmit && jest"
+    "test": "tsc --noEmit && jest",
+    "test-watch": "yarn run test --watch --notify",
+    "test-cover": "yarn run test --coverage"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
