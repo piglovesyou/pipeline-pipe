@@ -72,7 +72,7 @@ export class ParallelTransform extends Transform {
     this.ondrain = callback;
   }
 
-  _final(callback) {
+  _final(callback: Function) {
     this._finishing = true;
     this.ondrain = callback;
     this._drain();
