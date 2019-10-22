@@ -1,7 +1,7 @@
 src
 .eslintrc.js
-!dist/**/*.test.d.ts
-!dist/**/*.test.js
+*.test.d.ts
+*.test.js
 .travis.yml
 .idea
 jest.config.js
