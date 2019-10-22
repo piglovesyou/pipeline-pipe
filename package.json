@@ -47,7 +47,7 @@
     ]
   },
   "scripts": {
-    "lint": "eslint --ext .ts --ext .tsx --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
+    "lint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern \"**/*.test.ts\" .",
     "fix": "yarn run lint --fix",
     "test-watch": "yarn run test --watch --notify",
     "test-cover": "yarn run test --coverage",
