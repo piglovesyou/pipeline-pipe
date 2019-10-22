@@ -1,37 +1,59 @@
 {
-  "name": "@piglovesyou/parallel-transform",
-  "version": "2.1.2",
-  "types": "./index.d.ts",
-  "repository": "git@github.com:piglovesyou/parallel-transform.git",
+  "name": "pipeline-pipe",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:piglovesyou/pipeline-pipe.git",
   "license": "MIT",
-  "description": "Transform stream that allows you to run your transforms in parallel without changing the order",
+  "description": "Creates a parallel transform from async function",
   "keywords": [
     "transform",
     "stream",
-    "parallel",
-    "preserve",
-    "order"
-  ],
-  "files": [
-    "index.d.ts",
-    "index.js"
+    "parallel"
   ],
   "author": "Soichi Takamura <thepiglovesyou@gmail.com>",
   "dependencies": {
     "cyclist": "^1.0.1",
+    "eslint-plugin-import": "^2.18.2",
     "readable-stream": "^3.4.0"
   },
   "devDependencies": {
-    "@types/inherits": "^0.0.30",
-    "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.8",
-    "@types/readable-stream": "^2.3.4",
+    "@types/jest": "^24.0.19",
+    "@types/node": "^12.11.1",
+    "@types/readable-stream": "^2.3.5",
+    "@typescript-eslint/eslint-plugin": "^2.5.0",
+    "@typescript-eslint/parser": "^2.5.0",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.6.3"
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "npm run fix-js",
+      "git add --force"
+    ]
   },
   "scripts": {
-    "prepack": "tsc --declaration",
-    "test": "tsc --noEmit && jest"
+    "lint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern \"**/*.test.ts\" .",
+    "fix": "yarn run lint --fix",
+    "test-watch": "yarn run test --watch --notify",
+    "test-cover": "yarn run test --coverage",
+    "test": "yarn lint && tsc --noEmit && jest",
+    "prepack": "tsc --declaration"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

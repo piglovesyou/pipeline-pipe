@@ -3,5 +3,6 @@ yarn.lock
 .idea
 *.tgz
 *.js
+!.eslintrc.js
 *.d.ts
 !jest.config.js

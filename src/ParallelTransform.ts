@@ -1,32 +1,44 @@
+/* eslint-disable no-underscore-dangle, no-param-reassign, no-plusplus, no-continue */
+
 import { Transform, TransformOptions } from "readable-stream";
 import cyclist, { Cyclist } from "cyclist";
 
-type ParallelTransformOpitons = TransformOptions & {
+export type ParallelTransformOpitons = TransformOptions & {
+  maxParallel?: number,
   ordered?: boolean,
 };
 
-type OnTransformFn = (data: any, callback: (error?: Error, data?: any) => void) => void;
+export type OnTransformFn = (data: any, callback: (error?: Error, data?: any) => void) => void;
 
-export class ParallelTransform extends Transform {
+export default class ParallelTransform extends Transform {
   private _destroyed: boolean;
-  private _maxParallel: number;
-  private _ontransform: OnTransformFn;
+
+  private readonly _maxParallel: number;
+
+  private readonly _ontransform: OnTransformFn;
+
   private _finishing: boolean;
-  private _ordered: boolean;
-  private _buffer: Cyclist<any> | Array<any>;
+
+  private readonly _ordered: boolean;
+
+  private readonly _buffer: Cyclist<any> | Array<any>;
+
   private _top: number;
+
   private _bottom: number;
+
   private ondrain: null | Function;
 
   constructor(
-      maxParallel: number,
-      opts: ParallelTransformOpitons,
       ontransform: OnTransformFn,
+      opts: ParallelTransformOpitons,
   ) {
     if (opts.objectMode !== false) {
       opts.objectMode = true;
       opts.objectMode = true;
     }
+
+    const maxParallel = opts.maxParallel || 10;
     if (!opts.highWaterMark) opts.highWaterMark = Math.max(maxParallel, 16);
 
     super(opts);
@@ -68,11 +80,14 @@ export class ParallelTransform extends Transform {
       this._drain();
     });
 
-    if (this._top - this._bottom < this._maxParallel) return callback();
+    if (this._top - this._bottom < this._maxParallel) {
+      callback();
+      return;
+    }
     this.ondrain = callback;
   }
 
-  _final(callback) {
+  _final(callback: Function) {
     this._finishing = true;
     this.ondrain = callback;
     this._drain();
@@ -96,7 +111,7 @@ export class ParallelTransform extends Transform {
 
     if (!this._drained() || !this.ondrain) return;
 
-    const ondrain = this.ondrain;
+    const {ondrain} = this;
     this.ondrain = null;
     ondrain();
   };
@@ -106,23 +121,3 @@ export class ParallelTransform extends Transform {
     return this._finishing ? !diff : diff < this._maxParallel;
   }
 }
-
-export default function transform(
-    maxParallel: number | ParallelTransformOpitons | OnTransformFn,
-    opts?: ParallelTransformOpitons | OnTransformFn,
-    ontransform?: OnTransformFn,
-) {
-  if (typeof maxParallel === 'function') {
-    return new ParallelTransform(1, {}, maxParallel as OnTransformFn);
-  }
-  if (typeof opts === 'function') {
-    return new ParallelTransform(maxParallel as number, {}, opts as OnTransformFn);
-  }
-  if (typeof ontransform === 'function') {
-    return new ParallelTransform(maxParallel as number, opts as ParallelTransformOpitons, ontransform);
-  }
-  throw new Error('Wrong arugment passed');
-}
-
-module.exports = transform;
-module.exports.ParallelTransform = ParallelTransform;

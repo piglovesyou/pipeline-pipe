@@ -1,0 +1,10 @@
+src
+.eslintrc.js
+*.test.d.ts
+*.test.js
+.travis.yml
+.idea
+jest.config.js
+tsconfig.json
+*.iml
+*.tgz
