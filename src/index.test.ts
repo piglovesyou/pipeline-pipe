@@ -11,7 +11,7 @@ describe('transform', () => {
       const readable = new Readable({
         objectMode: true,
         read(size: number): void {
-          for (let n of expected) this.push(n);
+          for (const n of expected) this.push(n);
           this.push(null);
         }
       });
@@ -38,7 +38,7 @@ describe('transform', () => {
       const readable = new Readable({
         objectMode: true,
         read(size: number): void {
-          for (let n of expected) this.push(n);
+          for (const n of expected) this.push(n);
           this.push(null);
         }
       });
@@ -125,7 +125,7 @@ describe('transform', () => {
     });
 
     // @ts-ignore
-    let wasInParallel = tookActual < tookExpected;
+    const wasInParallel = tookActual < tookExpected;
     assert(wasInParallel);
     assert.deepStrictEqual(actualArray, expectedArray);
   }, 10 * 1000);
@@ -137,7 +137,7 @@ describe('transform', () => {
       new Readable({
         objectMode: true,
         read(size: number): void {
-          for (let n of [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]) {
+          for (const n of [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]) {
             this.push(n);
           }
           this.push(null);
@@ -151,7 +151,7 @@ describe('transform', () => {
               )
           );
         }
-        return;
+        
       })).pipe(pipe((n: number) => {
         return String(n * 10);
       })).pipe(pipe((s: string) => {
@@ -178,7 +178,7 @@ describe('transform', () => {
       })
           .pipe(pipe(async (data: string) => {
                 await timeout(Math.random() * 4);
-                return data + 'b';
+                return `${data  }b`;
               }, 10)
           )
           .pipe(pipe(async (data: string) => {

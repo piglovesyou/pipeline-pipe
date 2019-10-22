@@ -1,28 +1,11 @@
-import ParallelTransform, { OnTransformFn, ParallelTransformOpitons } from "./ParallelTransform";
-
-export type AsyncTransformFn = (data: any) => Promise<any> | any;
-
-export default function pipe(
-    asyncTransformFn: AsyncTransformFn,
-    opts: number | ParallelTransformOpitons = {},
-) {
-  const onTransformFn: OnTransformFn = function(this: ParallelTransform, data, callback) {
-    try {
-      let returned = asyncTransformFn.call(this, data);
-      Promise.resolve(returned).then(resolved => callback(undefined, resolved));
-    } catch (e) {
-      callback(e);
-    }
-  };
-
-  if (typeof opts === 'number') {
-    opts = {
-      maxParallel: opts,
-    };
-  }
-
-  return new ParallelTransform(onTransformFn, opts as ParallelTransformOpitons);
-}
+import fromIter from "./fromIter";
+import split from "./split";
+import pipeline from "./pipeline";
+import ParallelTransform from "./ParallelTransform";
+import pipe from "./pipe";
 
 module.exports = pipe;
 module.exports.ParallelTransform = ParallelTransform;
+module.exports.pipeline = pipeline;
+module.exports.split = split;
+module.exports.fromIter = fromIter;

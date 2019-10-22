@@ -10,13 +10,21 @@ export type OnTransformFn = (data: any, callback: (error?: Error, data?: any) =>
 
 export default class ParallelTransform extends Transform {
   private _destroyed: boolean;
+
   private readonly _maxParallel: number;
+
   private readonly _ontransform: OnTransformFn;
+
   private _finishing: boolean;
+
   private readonly _ordered: boolean;
+
   private readonly _buffer: Cyclist<any> | Array<any>;
+
   private _top: number;
+
   private _bottom: number;
+
   private ondrain: null | Function;
 
   constructor(
@@ -98,7 +106,7 @@ export default class ParallelTransform extends Transform {
 
     if (!this._drained() || !this.ondrain) return;
 
-    const ondrain = this.ondrain;
+    const {ondrain} = this;
     this.ondrain = null;
     ondrain();
   };

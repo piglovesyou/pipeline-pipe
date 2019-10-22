@@ -20,6 +20,7 @@
   "author": "Soichi Takamura <thepiglovesyou@gmail.com>",
   "dependencies": {
     "cyclist": "^1.0.1",
+    "eslint-plugin-import": "^2.18.2",
     "readable-stream": "^3.4.0"
   },
   "devDependencies": {
@@ -27,6 +28,14 @@
     "@types/jest": "^24.0.19",
     "@types/node": "^12.11.1",
     "@types/readable-stream": "^2.3.5",
+    "@typescript-eslint/eslint-plugin": "^2.5.0",
+    "@typescript-eslint/parser": "^2.5.0",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
@@ -39,12 +48,12 @@
     ]
   },
   "scripts": {
-    "fix": "yarn run lint-js --fix",
     "lint": "eslint --ext .ts --ext .tsx --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
-    "prepack": "tsc --declaration",
-    "test": "tsc --noEmit && jest",
+    "fix": "yarn run lint --fix",
     "test-watch": "yarn run test --watch --notify",
-    "test-cover": "yarn run test --coverage"
+    "test-cover": "yarn run test --coverage",
+    "test": "yarn lint && tsc --noEmit && jest",
+    "prepack": "tsc --declaration"
   },
   "husky": {
     "hooks": {
