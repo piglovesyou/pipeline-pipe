@@ -11,12 +11,6 @@
     "stream",
     "parallel"
   ],
-  "files": [
-    "dist/index.d.ts",
-    "dist/index.js",
-    "dist/ParallelTransform.d.ts",
-    "dist/ParallelTransform.js"
-  ],
   "author": "Soichi Takamura <thepiglovesyou@gmail.com>",
   "dependencies": {
     "cyclist": "^1.0.1",
