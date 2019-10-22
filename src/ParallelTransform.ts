@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle, no-param-reassign, no-plusplus */
+/* eslint-disable no-underscore-dangle, no-param-reassign, no-plusplus, no-continue */
 
 import { Transform, TransformOptions } from "readable-stream";
 import cyclist, { Cyclist } from "cyclist";
@@ -80,7 +80,10 @@ export default class ParallelTransform extends Transform {
       this._drain();
     });
 
-    if (this._top - this._bottom < this._maxParallel) return callback();
+    if (this._top - this._bottom < this._maxParallel) {
+      callback();
+      return;
+    }
     this.ondrain = callback;
   }
 
