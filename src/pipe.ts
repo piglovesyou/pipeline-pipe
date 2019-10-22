@@ -6,7 +6,7 @@ export default function pipe(
     asyncTransformFn: AsyncTransformFn,
     opts: number | ParallelTransformOpitons = {},
 ) {
-  const onTransformFn: OnTransformFn = function(this: ParallelTransform, data, callback) {
+  const onTransformFn: OnTransformFn = function (this: ParallelTransform, data, callback) {
     try {
       const returned = asyncTransformFn.call(this, data);
       Promise.resolve(returned).then(resolved => callback(undefined, resolved));
@@ -15,11 +15,9 @@ export default function pipe(
     }
   };
 
-  if (typeof opts === 'number') {
-    opts = {
-      maxParallel: opts,
-    };
-  }
+  const options = typeof opts === 'number'
+      ? { maxParallel: opts } as ParallelTransformOpitons
+      : opts;
 
-  return new ParallelTransform(onTransformFn, opts as ParallelTransformOpitons);
+  return new ParallelTransform(onTransformFn, options);
 }

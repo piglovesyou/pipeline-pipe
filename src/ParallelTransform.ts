@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle, no-param-reassign, no-plusplus */
+
 import { Transform, TransformOptions } from "readable-stream";
 import cyclist, { Cyclist } from "cyclist";
 

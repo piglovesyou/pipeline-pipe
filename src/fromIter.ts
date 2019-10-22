@@ -22,6 +22,7 @@ const fromIter: typeof Readable.from = Readable.from || function (iterable, opts
   // Reading boolean to protect against _read
   // being called before last iteration completion.
   let reading = false;
+  // eslint-disable-next-line no-underscore-dangle
   readable._read = function () {
     if (!reading) {
       reading = true;

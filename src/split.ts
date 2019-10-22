@@ -8,7 +8,7 @@ export default function split() {
       if (!Array.isArray(chunks)) {
         throw new Error('split() must receive an array from a previous function.');
       }
-      for (const c of chunks) this.push(c);
+      chunks.forEach((c) => this.push(c));
       callback();
     },
   });
