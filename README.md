@@ -1,15 +1,15 @@
-# pipeline-pipe
+# pipeline-pipe [![npm version](https://badge.fury.io/js/pipeline-pipe.svg)](https://badge.fury.io/js/pipeline-pipe) [![Build Status](https://travis-ci.org/piglovesyou/pipeline-pipe.svg?branch=master)](https://travis-ci.org/piglovesyou/pipeline-pipe)
 
 Creates a parallel transform from async function.
 
-This is a wrapped version of [parallel-transform](https://github.com/mafintosh/parallel-transform) with additional features:
+This is a wrapped version of [parallel-transform](https://github.com/mafintosh/parallel-transform) with:
 
 * Fix mafintosh/parallel-transform#4 ; works well in `require('stream').pipeline`
 * Accepts a promise as returned value, instead of calling `callback()`
 * TypeScript Definition (with pure TypeScript implementation)
 * Some utility functions
 
-Example:
+Example usage:
  
 ```js
 // Example to scrape HTML and store titles of them in DB:
@@ -32,7 +32,7 @@ pipeline(
 );
 ```
 
-Types of `pipe()`:
+Types of `pipe()` is:
 
 ```typescript
 import { Transform, TransformOptions } from 'stream';
@@ -43,12 +43,14 @@ export default function pipe(
         | number
         | TransformOptions & { maxParallel?: number, ordered?: boolean }
 ): Transform;
-```
+ ```
 
-| *`maxParallel`*  | 10 by default. Number of parallel executions are never more than that. |
-| *`ordered`*  | True by default, preserving order of streaming chunks. False would be faster depending on cases. |
+| Option property | Default value | description |
+| --- | --- | --- |
+| **`maxParallel`**  | `10` | Number of maximum parallel executions. |
+| **`ordered`**      | `true` | Preserving order of streaming chunks. |
 
-If number is passed as `opts`, it's recognized as `maxParallel`.
+If number is passed as `opts`, it'll be detected as `maxParallel`.
 
 ## Utility functions
 
@@ -77,7 +79,7 @@ console.log('Done!');
 
 ### fromIter(iter)
 
-Same as `Readable.from` introduced in Node v12.3, creating a readable stream from `Iterable`. 
+A copy of [`Readable.from`](https://nodejs.org/api/stream.html#stream_stream_readable_from_iterable_options) introduced in Node v12.3.
 
 ```js
 const {fromIter} = require('pipeline-pipe');
@@ -96,7 +98,7 @@ const readable = Readable.from([2, 3, 4]);
 
 ### split()
 
-Returning a `Transform` to split incoming `Array` chunk into pieces to following stream.
+Creates a `Transform` to split incoming `Array` chunk into pieces to subsequent streams.
 
 ```js
 const {pipeline} = require('stream');
