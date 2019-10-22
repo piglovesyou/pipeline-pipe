@@ -5,7 +5,7 @@
   "types": "dist/index.d.ts",
   "repository": "git@github.com:piglovesyou/pipeline-pipe.git",
   "license": "MIT",
-  "description": "",
+  "description": "Creates a parallel transform from async function",
   "keywords": [
     "transform",
     "stream",
