@@ -28,7 +28,7 @@ export default class ParallelTransform extends Transform {
       opts.objectMode = true;
     }
 
-    const maxParallel = opts.maxParallel || 1;
+    const maxParallel = opts.maxParallel || 10;
     if (!opts.highWaterMark) opts.highWaterMark = Math.max(maxParallel, 16);
 
     super(opts);

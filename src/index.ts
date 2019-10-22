@@ -1,6 +1,6 @@
 import ParallelTransform, { OnTransformFn, ParallelTransformOpitons } from "./ParallelTransform";
 
-export type AsyncTransformFn = (data: any) => Promise<any> | any | void;
+export type AsyncTransformFn = (data: any) => Promise<any> | any;
 
 export default function pipe(
     asyncTransformFn: AsyncTransformFn,

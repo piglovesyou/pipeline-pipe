@@ -1,20 +1,21 @@
 {
-  "name": "@piglovesyou/parallel-transform",
-  "version": "2.1.2",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "repository": "git@github.com:piglovesyou/parallel-transform.git",
+  "name": "pipeline-pipe",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:piglovesyou/pipeline-pipe.git",
   "license": "MIT",
-  "description": "Transform stream that allows you to run your transforms in parallel without changing the order",
+  "description": "",
   "keywords": [
     "transform",
     "stream",
-    "parallel",
-    "preserve",
-    "order"
+    "parallel"
   ],
   "files": [
-    "src"
+    "dist/index.d.ts",
+    "dist/index.js",
+    "dist/ParallelTransform.d.ts",
+    "dist/ParallelTransform.js"
   ],
   "author": "Soichi Takamura <thepiglovesyou@gmail.com>",
   "dependencies": {
