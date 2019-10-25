@@ -1,13 +1,15 @@
 # pipeline-pipe [![npm version](https://badge.fury.io/js/pipeline-pipe.svg)](https://badge.fury.io/js/pipeline-pipe) [![Build Status](https://travis-ci.org/piglovesyou/pipeline-pipe.svg?branch=master)](https://travis-ci.org/piglovesyou/pipeline-pipe)
 
-Creates a parallel transform from async function.
+This is a wrapped version of [parallel-transform](https://github.com/mafintosh/parallel-transform) to accept asynchronous functions.
 
-This is a wrapped version of [parallel-transform](https://github.com/mafintosh/parallel-transform) with:
+## Why
 
-* Fix mafintosh/parallel-transform#4 ; works well in `require('stream').pipeline`
-* Accepts a promise as returned value, instead of calling `callback()`
-* TypeScript Definition (with pure TypeScript implementation)
+* Accepts a promise as returned value for more fluent syntax
+* Fixes [mafintosh/parallel-transform/issues/4](https://github.com/mafintosh/parallel-transform/issues/4) ; works well in `require('stream').pipeline`
+* TypeScript Definition (with the pure TypeScript implementation)
 * Some utility functions
+
+## pipe(fn, opts)
 
 Example usage:
  
@@ -21,8 +23,7 @@ pipeline(
     Readable.from([1, 2, 3]),
     pipe(postId => getPost(postId), 16),  // Request HTML asynchronously in 16 parallel
     pipe(json => {                        // Synchronous transformation as Array.prototype.map
-      const dom = parseHTML(json.postBody);
-      return dom.document.title;
+      return parseHTML(json.postBody).document.title;
     }),
     pipe(title => {                       // Synchronous transformation as Array.prototype.filter
       return title.includes('important') ? title : null
@@ -32,7 +33,7 @@ pipeline(
 );
 ```
 
-Types of `pipe()` is:
+Types:
 
 ```typescript
 import { Transform, TransformOptions } from 'stream';
@@ -50,9 +51,9 @@ export default function pipe(
 | **`maxParallel`**  | `10` | Number of maximum parallel executions. |
 | **`ordered`**      | `true` | Preserving order of streaming chunks. |
 
-If number is passed as `opts`, it'll be detected as `maxParallel`.
+A number can be passed to `opts`. `pipe(fn, 20)` is same as `pipe(fn, {maxParallel: 20})`.
 
-## Utility functions
+## Some utility functions
 
 ### pipeline(stream, stream, ...)
  
