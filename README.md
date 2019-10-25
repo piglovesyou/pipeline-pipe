@@ -7,6 +7,7 @@ This is a wrapped version of [parallel-transform](https://github.com/mafintosh/p
 * Accepts a promise as returned value for more fluent syntax
 * Fixes [mafintosh/parallel-transform/issues/4](https://github.com/mafintosh/parallel-transform/issues/4) ; works well in `require('stream').pipeline`
 * TypeScript Definition (with the pure TypeScript implementation)
+* Tests for robustness
 * Some utility functions
 
 ## pipe(fn, opts)
@@ -57,7 +58,7 @@ A number can be passed to `opts`. `pipe(fn, 20)` is same as `pipe(fn, {maxParall
 
 ### pipeline(stream, stream, ...)
  
-Just a promisified version of `require('stream').pipeline`. Equivalent to:
+Just a promisified version of `require('stream').pipeline`. It requires Node v10+. Equivalent to:
 
 ```js
 const {promisify} = require('util');
