@@ -10,6 +10,9 @@ export type ParallelTransformOpitons = TransformOptions & {
 
 export type OnTransformFn = (data: any, callback: (error?: Error, data?: any) => void) => void;
 
+const DEFAULT_MAX_PARALLEL = 10;
+const DEFAULT_HIGH_WATERMARK = 16;
+
 export default class ParallelTransform extends Transform {
   private _destroyed: boolean;
 
@@ -38,8 +41,10 @@ export default class ParallelTransform extends Transform {
       opts.objectMode = true;
     }
 
-    const maxParallel = opts.maxParallel || 10;
-    if (!opts.highWaterMark) opts.highWaterMark = Math.max(maxParallel, 16);
+    const maxParallel = opts.maxParallel || DEFAULT_MAX_PARALLEL;
+    if (!opts.highWaterMark) {
+      opts.highWaterMark = Math.max(maxParallel, DEFAULT_HIGH_WATERMARK);
+    }
 
     super(opts);
 
