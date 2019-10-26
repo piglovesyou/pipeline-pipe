@@ -97,6 +97,24 @@ pipeline(
 );
 ```
 
+### `.concat(size)`
+
+It concatenates sequential data to be specified size of array. This is useful when you post array data at once in the way that [Elasticsearch Bulk API does](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/docs-bulk.html).
+
+Example:
+```javascript
+const {concat, pipe} = require('pipeline-pipe');
+
+pipeline(
+    Readable.from([1, 2, 3, 4, 5]),
+    concat(2),
+    pipe(console.log),  // [ 1, 2 ]
+                        // [ 3, 4 ]
+                        // [ 5 ]
+    (err) => console.info('All done!'),
+);
+```
+
 ## License
 
 MIT
