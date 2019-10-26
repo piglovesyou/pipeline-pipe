@@ -1,9 +1,10 @@
 import assert from 'assert';
-import { pipeline, Readable } from 'readable-stream';
+import {Readable} from 'stream';
+import { pipeline } from 'readable-stream';
 import pipe from './index';
 
-describe('transform', () => {
-  it('should emit pipeline callback after synchronous transform', async () => {
+describe('pipe(fn, opts)', () => {
+  it('emits callback in pipeline() after synchronous transform', async () => {
     const expected = [ 2, 3, 4, 5, 6 ];
     const actual: number[] = [];
 
@@ -23,7 +24,7 @@ describe('transform', () => {
     assert.deepStrictEqual(actual, expected);
   }, 10 * 1000);
 
-  it('should emit pipeline callback after asynchronous transform', async () => {
+  it('emits callback in pipeline() after asynchronous transform', async () => {
     const expected = [ 2, 3, 4, 5, 6 ];
     const actual: number[] = [];
 
@@ -48,7 +49,7 @@ describe('transform', () => {
     assert.deepStrictEqual(actual, expected);
   }, 10 * 1000);
 
-  it('should fix mafintosh/parallel-transform##4, emit "finish" after all buffer is consumed', async () => {
+  it('fixes mafintosh/parallel-transform##4, emit "finish" after all buffer is consumed', async () => {
     const expectedArray = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
     const actualArray: number[] = [];
     let finished = false;
@@ -78,7 +79,7 @@ describe('transform', () => {
     assert(finished);
   });
 
-  it('should run in parallel', async () => {
+  it('runs in parallel', async () => {
     const acceptableOffset = 200;
     const tookExpected = 1000 + acceptableOffset;
     const expectedArray = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
@@ -116,7 +117,7 @@ describe('transform', () => {
     assert.deepStrictEqual(actualArray, expectedArray);
   }, 10 * 1000);
 
-  it('should chain pipes', async () => {
+  it('chains pipes', async () => {
     const expected = [ '0', '20', '40', '60', '80' ];
     const actual: string[] = [];
     await new Promise(resolve => {
@@ -139,7 +140,7 @@ describe('transform', () => {
     assert.deepStrictEqual(actual, expected);
   });
 
-  it('should hanlde huge numbe of stream', async () => {
+  it('hanldes huge numbe of stream', async () => {
     const expected = 10 * 1000;
     let actual = 0;
     await new Promise(resolve => {
