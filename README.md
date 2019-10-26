@@ -22,14 +22,26 @@ const pipe = require('pipeline-pipe');
 
 pipeline(
     Readable.from([1, 2, 3]),
-    pipe(postId => getPost(postId), 16),  // Request HTML asynchronously in 16 parallel
-    pipe(json => {                        // Synchronous transformation as Array.prototype.map
+    
+    // Request HTML asynchronously in 16 parallel
+    pipe(async postId => {                
+      const json = await getPost(postId);
+      return json;
+    }, 16),
+    
+    // Synchronous transformation as Array.prototype.map
+    pipe(json => {
       return parseHTML(json.postBody).document.title;
     }),
-    pipe(title => {                       // Synchronous transformation as Array.prototype.filter
+    
+    // Synchronous transformation as Array.prototype.filter
+    pipe(title => {
       return title.includes('important') ? title : null
-    }),  
-    pipe(title => storeInDB(title), 4),   // Asynchronous in 4 parallel
+    }),
+    
+    // Asynchronous in 4 parallel
+    pipe(title => storeInDB(title), 4),
+    
     (err) => console.info('All done!')
 );
 ```
