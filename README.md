@@ -76,7 +76,7 @@ await pipeline(
     pipe(chunk => chunk.replace('a', 'z')),
     pipe(chunk => storeInDB(chunk)),
 );
-console.log('Done!');
+console.log('All done!');
 ``` 
 
 ### split()
@@ -85,7 +85,7 @@ Creates a `Transform` to split incoming `Array` chunk into pieces to subsequent 
 
 ```js
 const {pipeline} = require('stream');
-const {split} = require('pipeline-pipe');
+const {split, pipe} = require('pipeline-pipe');
 
 pipeline(
     Readable.from([1, 2, 3]),
@@ -97,12 +97,13 @@ pipeline(
 );
 ```
 
-### `.concat(size)`
+### .concat(size)
 
 It concatenates sequential data to be specified size of array. This is useful when you post array data at once in the way that [Elasticsearch Bulk API does](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/docs-bulk.html).
 
 Example:
 ```javascript
+const {pipeline} = require('stream');
 const {concat, pipe} = require('pipeline-pipe');
 
 pipeline(
