@@ -3,20 +3,13 @@ import { pipeline, Readable } from 'readable-stream';
 import pipe from './index';
 
 describe('transform', () => {
-  it('should emit pipeline callback with synchronous stream ', async () => {
+  it('should emit pipeline callback after synchronous transform', async () => {
     const expected = [ 2, 3, 4, 5, 6 ];
     const actual: number[] = [];
 
     await new Promise((resolve, reject) => {
-      const readable = new Readable({
-        objectMode: true,
-        read(size: number): void {
-          for (const n of expected) this.push(n);
-          this.push(null);
-        }
-      });
       pipeline(
-          readable,
+          Readable.from(expected),
           pipe(function (n) {
             actual.push(n);
           }),
@@ -30,20 +23,13 @@ describe('transform', () => {
     assert.deepStrictEqual(actual, expected);
   }, 10 * 1000);
 
-  it('should emit pipeline callback with asynchronous stream', async () => {
+  it('should emit pipeline callback after asynchronous transform', async () => {
     const expected = [ 2, 3, 4, 5, 6 ];
     const actual: number[] = [];
 
     await new Promise((resolve, reject) => {
-      const readable = new Readable({
-        objectMode: true,
-        read(size: number): void {
-          for (const n of expected) this.push(n);
-          this.push(null);
-        }
-      });
       pipeline(
-          readable,
+          Readable.from(expected),
           pipe(function (n) {
             return new Promise(resolve => {
               setTimeout(() => {
@@ -130,19 +116,12 @@ describe('transform', () => {
     assert.deepStrictEqual(actualArray, expectedArray);
   }, 10 * 1000);
 
-  it('should chain pipes as expected', async () => {
+  it('should chain pipes', async () => {
     const expected = [ '0', '20', '40', '60', '80' ];
     const actual: string[] = [];
     await new Promise(resolve => {
-      new Readable({
-        objectMode: true,
-        read(size: number): void {
-          for (const n of [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]) {
-            this.push(n);
-          }
-          this.push(null);
-        }
-      }).pipe(pipe((n: number) => {
+      const r = Readable.from([ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]);
+      r.pipe(pipe((n: number) => {
         if (n % 2 === 0) {
           return new Promise(
               resolve => setTimeout(
@@ -151,7 +130,6 @@ describe('transform', () => {
               )
           );
         }
-        
       })).pipe(pipe((n: number) => {
         return String(n * 10);
       })).pipe(pipe((s: string) => {
@@ -178,7 +156,7 @@ describe('transform', () => {
       })
           .pipe(pipe(async (data: string) => {
                 await timeout(Math.random() * 4);
-                return `${data  }b`;
+                return `${ data }b`;
               }, 10)
           )
           .pipe(pipe(async (data: string) => {
