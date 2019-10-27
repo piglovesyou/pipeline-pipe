@@ -10,6 +10,12 @@ This is a wrapped version of [parallel-transform](https://github.com/mafintosh/p
 * Tests for robustness
 * Some utility functions
 
+## Install
+
+```bash
+npm install pipeline-pipe
+```
+
 ## pipe(fn, opts)
 
 Example usage:
@@ -30,17 +36,16 @@ pipeline(
     }, 16),
     
     // Synchronous transformation as Array.prototype.map
-    pipe(json => {
-      return parseHTML(json.postBody).document.title;
-    }),
+    pipe(json => parseHTML(json.postBody).document.title),
     
     // Synchronous transformation as Array.prototype.filter
-    pipe(title => {
-      return title.includes('important') ? title : null
-    }),
+    pipe(title => title.includes('important') ? title : null),
     
     // Asynchronous in 4 parallel
-    pipe(title => storeInDB(title), 4),
+    pipe(async title => {
+      const result = await storeInDB(title), 4);
+      console.info(result);
+    }, 4)
     
     (err) => console.info('All done!')
 );
@@ -51,11 +56,13 @@ Types:
 ```typescript
 import { Transform, TransformOptions } from 'stream';
 
+type ParallelTransformOpitons =
+  | number
+  | TransformOptions & { maxParallel?: number, ordered?: boolean };
+
 export default function pipe(
     fn: (data: any) => Promise<any> | any,
-    opts?:
-        | number
-        | TransformOptions & { maxParallel?: number, ordered?: boolean }
+    opts?: ParallelTransformOptions,
 ): Transform;
  ```
 
@@ -91,25 +98,7 @@ await pipeline(
 console.log('All done!');
 ``` 
 
-### split()
-
-Creates a `Transform` to split incoming `Array` chunk into pieces to subsequent streams.
-
-```js
-const {pipeline} = require('stream');
-const {split, pipe} = require('pipeline-pipe');
-
-pipeline(
-    Readable.from([1, 2, 3]),
-    pipe(page => getPostsByPage(page)),
-    pipe(json => json.posts),             // Returns an array of posts
-    pipe(split()),                        // Splits the array into each posts
-    pipe(post => storeInDB(post.title)),  // Now the argument is a post
-    (err) => console.info('All done!')
-);
-```
-
-### .concat(size)
+### concat(size)
 
 It concatenates sequential data to be specified size of array. This is useful when you post array data at once in the way that [Elasticsearch Bulk API does](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/docs-bulk.html).
 
@@ -125,6 +114,24 @@ pipeline(
                         // [ 3, 4 ]
                         // [ 5 ]
     (err) => console.info('All done!'),
+);
+```
+
+### split()
+
+Creates a `Transform` to split incoming `Array` chunk into pieces to subsequent streams.
+
+```js
+const {pipeline} = require('stream');
+const {split, pipe} = require('pipeline-pipe');
+
+pipeline(
+    Readable.from([1, 2, 3]),
+    pipe(page => getPostsByPage(page)),
+    pipe(json => json.posts),             // Returns an array of posts
+    pipe(split()),                        // Splits the array into each posts
+    pipe(post => storeInDB(post.title)),  // Now the argument is a post
+    (err) => console.info('All done!')
 );
 ```
 
