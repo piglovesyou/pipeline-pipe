@@ -1,6 +1,6 @@
 # pipeline-pipe [![npm version](https://badge.fury.io/js/pipeline-pipe.svg)](https://badge.fury.io/js/pipeline-pipe) [![Build Status](https://travis-ci.org/piglovesyou/pipeline-pipe.svg?branch=master)](https://travis-ci.org/piglovesyou/pipeline-pipe)
 
-This is a wrapped version of [parallel-transform](https://github.com/mafintosh/parallel-transform) to accept asynchronous functions.
+This is a wrapped version of [parallel-transform](https://github.com/mafintosh/parallel-transform) to accept asynchronous function.
 
 ## Why
 
