@@ -9,6 +9,7 @@ This is a wrapped version of [parallel-transform](https://github.com/mafintosh/p
 * TypeScript Definition (with the pure TypeScript implementation)
 * Tests for robustness
 * Some utility functions
+* [The blog post](https://dev.to/piglovesyou/pipeline-pipe-fun-way-to-get-batching-done-with-node-stream-42cb)
 
 ## Install
 
