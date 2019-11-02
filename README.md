@@ -1,6 +1,6 @@
 # pipeline-pipe [![npm version](https://badge.fury.io/js/pipeline-pipe.svg)](https://badge.fury.io/js/pipeline-pipe) [![Build Status](https://travis-ci.org/piglovesyou/pipeline-pipe.svg?branch=master)](https://travis-ci.org/piglovesyou/pipeline-pipe)
 
-This is a wrapped version of [parallel-transform](https://github.com/mafintosh/parallel-transform) to accept asynchronous functions.
+This is a wrapped version of [parallel-transform](https://github.com/mafintosh/parallel-transform) to accept asynchronous function.
 
 ## Why
 
@@ -9,6 +9,13 @@ This is a wrapped version of [parallel-transform](https://github.com/mafintosh/p
 * TypeScript Definition (with the pure TypeScript implementation)
 * Tests for robustness
 * Some utility functions
+* [The blog post](https://dev.to/piglovesyou/pipeline-pipe-fun-way-to-get-batching-done-with-node-stream-42cb)
+
+## Install
+
+```bash
+npm install pipeline-pipe
+```
 
 ## pipe(fn, opts)
 
@@ -22,14 +29,25 @@ const pipe = require('pipeline-pipe');
 
 pipeline(
     Readable.from([1, 2, 3]),
-    pipe(postId => getPost(postId), 16),  // Request HTML asynchronously in 16 parallel
-    pipe(json => {                        // Synchronous transformation as Array.prototype.map
-      return parseHTML(json.postBody).document.title;
-    }),
-    pipe(title => {                       // Synchronous transformation as Array.prototype.filter
-      return title.includes('important') ? title : null
-    }),  
-    pipe(title => storeInDB(title), 4),   // Asynchronous in 4 parallel
+    
+    // Request HTML asynchronously in 16 parallel
+    pipe(async postId => {                
+      const json = await getPost(postId);
+      return json;
+    }, 16),
+    
+    // Synchronous transformation as Array.prototype.map
+    pipe(json => parseHTML(json.postBody).document.title),
+    
+    // Synchronous transformation as Array.prototype.filter
+    pipe(title => title.includes('important') ? title : null),
+    
+    // Asynchronous in 4 parallel
+    pipe(async title => {
+      const result = await storeInDB(title), 4);
+      console.info(result);
+    }, 4)
+    
     (err) => console.info('All done!')
 );
 ```
@@ -39,11 +57,13 @@ Types:
 ```typescript
 import { Transform, TransformOptions } from 'stream';
 
+type ParallelTransformOpitons =
+  | number
+  | TransformOptions & { maxParallel?: number, ordered?: boolean };
+
 export default function pipe(
     fn: (data: any) => Promise<any> | any,
-    opts?:
-        | number
-        | TransformOptions & { maxParallel?: number, ordered?: boolean }
+    opts?: ParallelTransformOptions,
 ): Transform;
  ```
 
@@ -76,33 +96,16 @@ await pipeline(
     pipe(chunk => chunk.replace('a', 'z')),
     pipe(chunk => storeInDB(chunk)),
 );
-console.log('Done!');
+console.log('All done!');
 ``` 
 
-### split()
-
-Creates a `Transform` to split incoming `Array` chunk into pieces to subsequent streams.
-
-```js
-const {pipeline} = require('stream');
-const {split} = require('pipeline-pipe');
-
-pipeline(
-    Readable.from([1, 2, 3]),
-    pipe(page => getPostsByPage(page)),
-    pipe(json => json.posts),             // Returns an array of posts
-    pipe(split()),                        // Splits the array into each posts
-    pipe(post => storeInDB(post.title)),  // Now the argument is a post
-    (err) => console.info('All done!')
-);
-```
-
-### `.concat(size)`
+### concat(size)
 
 It concatenates sequential data to be specified size of array. This is useful when you post array data at once in the way that [Elasticsearch Bulk API does](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/docs-bulk.html).
 
 Example:
 ```javascript
+const {pipeline} = require('stream');
 const {concat, pipe} = require('pipeline-pipe');
 
 pipeline(
@@ -112,6 +115,24 @@ pipeline(
                         // [ 3, 4 ]
                         // [ 5 ]
     (err) => console.info('All done!'),
+);
+```
+
+### split()
+
+Creates a `Transform` to split incoming `Array` chunk into pieces to subsequent streams.
+
+```js
+const {pipeline} = require('stream');
+const {split, pipe} = require('pipeline-pipe');
+
+pipeline(
+    Readable.from([1, 2, 3]),
+    pipe(page => getPostsByPage(page)),
+    pipe(json => json.posts),             // Returns an array of posts
+    pipe(split()),                        // Splits the array into each posts
+    pipe(post => storeInDB(post.title)),  // Now the argument is a post
+    (err) => console.info('All done!')
 );
 ```
 
