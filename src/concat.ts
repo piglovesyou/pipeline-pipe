@@ -21,6 +21,6 @@ export default function concat(size: number) {
         return;
       }
       callback(undefined, null);
-    }
+    },
   });
 }

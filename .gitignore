@@ -1,8 +1,8 @@
 node_modules
 yarn.lock
 .idea
-*.tgz
 *.js
-!.eslintrc.js
+!.*.js
+*.tgz
 *.d.ts
 !jest.config.js
