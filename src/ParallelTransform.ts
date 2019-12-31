@@ -1,14 +1,17 @@
 /* eslint-disable no-underscore-dangle, no-param-reassign, no-plusplus, no-continue */
 
-import { Transform, TransformOptions } from "readable-stream";
-import cyclist, { Cyclist } from "cyclist";
+import { Transform, TransformOptions } from 'readable-stream';
+import cyclist, { Cyclist } from 'cyclist';
 
 export type ParallelTransformOpitons = TransformOptions & {
-  maxParallel?: number,
-  ordered?: boolean,
+  maxParallel?: number;
+  ordered?: boolean;
 };
 
-export type OnTransformFn = (data: any, callback: (error?: Error, data?: any) => void) => void;
+export type OnTransformFn = (
+  data: any,
+  callback: (error?: Error, data?: any) => void,
+) => void;
 
 const DEFAULT_MAX_PARALLEL = 10;
 const DEFAULT_HIGH_WATERMARK = 16;
@@ -32,10 +35,7 @@ export default class ParallelTransform extends Transform {
 
   private ondrain: null | Function;
 
-  constructor(
-      ontransform: OnTransformFn,
-      opts: ParallelTransformOpitons,
-  ) {
+  constructor(ontransform: OnTransformFn, opts: ParallelTransformOpitons) {
     if (opts.objectMode !== false) {
       opts.objectMode = true;
       opts.objectMode = true;
@@ -59,14 +59,18 @@ export default class ParallelTransform extends Transform {
     this.ondrain = null;
   }
 
-  destroy(err?: Error | undefined, callback?: ((error: Error | null) => void) | undefined): this {
+  destroy(): this {
     if (this._destroyed) return this;
     this._destroyed = true;
     this.emit('close');
     return this;
-  };
+  }
 
-  _transform(chunk: any, encoding: string, callback: (error?: Error, data?: any) => void): void {
+  _transform(
+    chunk: any,
+    encoding: string,
+    callback: (error?: Error, data?: any) => void,
+  ): void {
     const pos = this._top++;
 
     this._ontransform(chunk, (err, data) => {
@@ -80,7 +84,10 @@ export default class ParallelTransform extends Transform {
       if (Array.isArray(this._buffer)) {
         this._buffer.push(data);
       } else {
-        this._buffer.put(pos, (data === undefined || data === null) ? null : data);
+        this._buffer.put(
+          pos,
+          data === undefined || data === null ? null : data,
+        );
       }
       this._drain();
     });
@@ -116,10 +123,10 @@ export default class ParallelTransform extends Transform {
 
     if (!this._drained() || !this.ondrain) return;
 
-    const {ondrain} = this;
+    const { ondrain } = this;
     this.ondrain = null;
     ondrain();
-  };
+  }
 
   _drained() {
     const diff = this._top - this._bottom;
