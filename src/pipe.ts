@@ -9,14 +9,16 @@ export default function pipe(
   asyncTransformFn: AsyncTransformFn,
   opts: number | ParallelTransformOpitons = {},
 ) {
-  const onTransformFn: OnTransformFn = function(
+  const onTransformFn: OnTransformFn = function (
     this: ParallelTransform,
     data,
     callback,
   ) {
     try {
       const returned = asyncTransformFn.call(this, data);
-      Promise.resolve(returned).then(resolved => callback(undefined, resolved));
+      Promise.resolve(returned).then((resolved) =>
+        callback(undefined, resolved),
+      );
     } catch (e) {
       callback(e);
     }
