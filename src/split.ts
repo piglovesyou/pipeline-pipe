@@ -10,7 +10,7 @@ export default function split() {
           'split() must receive an array from a previous function.',
         );
       }
-      chunks.forEach(c => this.push(c));
+      chunks.forEach((c) => this.push(c));
       callback();
     },
   });
