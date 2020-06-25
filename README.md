@@ -1,14 +1,14 @@
 # pipeline-pipe [![npm version](https://badge.fury.io/js/pipeline-pipe.svg)](https://badge.fury.io/js/pipeline-pipe) [![Build Status](https://travis-ci.org/piglovesyou/pipeline-pipe.svg?branch=master)](https://travis-ci.org/piglovesyou/pipeline-pipe)
 
-This is a wrapped version of [parallel-transform](https://github.com/mafintosh/parallel-transform) to accept asynchronous function.
+A tiny wrapper of [parallel-transform](https://github.com/mafintosh/parallel-transform) for a [pipeline function in Node Stream](https://nodejs.org/api/stream.html#stream_stream_pipeline_source_transforms_destination_callback).
 
 ## Why
 
-* Accepts a promise as returned value for more fluent syntax
-* Fixes [mafintosh/parallel-transform/issues/4](https://github.com/mafintosh/parallel-transform/issues/4) ; works well in `require('stream').pipeline`
-* TypeScript Definition (with the pure TypeScript implementation)
-* Tests for robustness
-* Some utility functions
+* Accepts async functions
+* Fixes [mafintosh/parallel-transform/issues/4](https://github.com/mafintosh/parallel-transform/issues/4) to work with `require('stream').pipeline`
+* TypeScript Definition (with the pure TypeScript reimplementation)
+* Add tests
+* A few utility functions
 * [The blog post](https://dev.to/piglovesyou/pipeline-pipe-fun-way-to-get-batching-done-with-node-stream-42cb)
 
 ## Install
