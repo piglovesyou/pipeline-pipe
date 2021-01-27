@@ -8,7 +8,7 @@ describe('pipe(fn, opts)', () => {
     const expected = [ 2, 3, 4, 5, 6 ];
     const actual: number[] = [];
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       pipeline(
           Readable.from(expected),
           pipe(function (n) {
@@ -28,11 +28,11 @@ describe('pipe(fn, opts)', () => {
     const expected = [ 2, 3, 4, 5, 6 ];
     const actual: number[] = [];
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       pipeline(
           Readable.from(expected),
           pipe(function (n) {
-            return new Promise(resolve => {
+            return new Promise<void>(resolve => {
               setTimeout(() => {
                 actual.push(n);
                 resolve();
@@ -54,7 +54,7 @@ describe('pipe(fn, opts)', () => {
     const actualArray: number[] = [];
     let finished = false;
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       const stream = pipe(function (data) {
         return new Promise(resolve => {
           setTimeout(() => {
@@ -86,7 +86,7 @@ describe('pipe(fn, opts)', () => {
     const actualArray: number[] = [];
     let tookActual: number;
 
-    await new Promise(resolve => {
+    await new Promise<void>(resolve => {
       const start = Date.now();
       const stream = pipe(function (data) { // 10 is the parallism level
         return new Promise(
@@ -147,7 +147,7 @@ describe('pipe(fn, opts)', () => {
       let i = 0;
       new Readable({
         objectMode: true,
-        read(size: number): void {
+        read(_size: number): void {
           for (; ;) {
             const pushed = this.push('a');
             if (++i >= expected) this.push(null);

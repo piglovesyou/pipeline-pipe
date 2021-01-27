@@ -3,15 +3,14 @@
 import { Transform, TransformOptions } from 'readable-stream';
 import cyclist, { Cyclist } from 'cyclist';
 
-export type ParallelTransformOpitons = TransformOptions & {
+export type ParallelTransformOptions = TransformOptions & {
   maxParallel?: number;
   ordered?: boolean;
 };
 
-export type OnTransformFn = (
-  data: any,
-  callback: (error?: Error, data?: any) => void,
-) => void;
+type Callback = (error?: Error, data?: any) => void;
+
+export type OnTransformFn = (data: any, callback: Callback) => void;
 
 const DEFAULT_MAX_PARALLEL = 10;
 const DEFAULT_HIGH_WATERMARK = 16;
@@ -33,9 +32,9 @@ export default class ParallelTransform extends Transform {
 
   private _bottom: number;
 
-  private ondrain: null | Function;
+  private ondrain: null | Callback;
 
-  constructor(ontransform: OnTransformFn, opts: ParallelTransformOpitons) {
+  constructor(ontransform: OnTransformFn, opts: ParallelTransformOptions) {
     if (opts.objectMode !== false) {
       opts.objectMode = true;
       opts.objectMode = true;
@@ -66,11 +65,7 @@ export default class ParallelTransform extends Transform {
     return this;
   }
 
-  _transform(
-    chunk: any,
-    encoding: string,
-    callback: (error?: Error, data?: any) => void,
-  ): void {
+  _transform(chunk: any, encoding: string, callback: Callback): void {
     const pos = this._top++;
 
     this._ontransform(chunk, (err, data) => {
@@ -99,7 +94,7 @@ export default class ParallelTransform extends Transform {
     this.ondrain = callback;
   }
 
-  _final(callback: Function) {
+  _final(callback: Callback) {
     this._finishing = true;
     this.ondrain = callback;
     this._drain();

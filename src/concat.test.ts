@@ -16,7 +16,7 @@ describe('concat(size)', () => {
     const actual1: number[][] = [];
     const actual2: number[] = [];
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       pipeline(
           Readable.from(Array.from(Array(23)).map((_, i) => i)),
           pipe((n) => n * 10),

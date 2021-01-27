@@ -1,13 +1,13 @@
 import ParallelTransform, {
   OnTransformFn,
-  ParallelTransformOpitons,
+  ParallelTransformOptions,
 } from './ParallelTransform';
 
 export type AsyncTransformFn = (data: any) => Promise<any> | any;
 
 export default function pipe(
   asyncTransformFn: AsyncTransformFn,
-  opts: number | ParallelTransformOpitons = {},
+  opts: number | ParallelTransformOptions = {},
 ) {
   const onTransformFn: OnTransformFn = function (
     this: ParallelTransform,
@@ -26,7 +26,7 @@ export default function pipe(
 
   const options =
     typeof opts === 'number'
-      ? ({ maxParallel: opts } as ParallelTransformOpitons)
+      ? ({ maxParallel: opts } as ParallelTransformOptions)
       : opts;
 
   return new ParallelTransform(onTransformFn, options);
