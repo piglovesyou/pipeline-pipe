@@ -6,3 +6,4 @@ yarn.lock
 *.tgz
 *.d.ts
 !jest.config.js
+/*.iml
