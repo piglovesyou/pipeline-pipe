@@ -5,8 +5,6 @@ import { pipeline } from 'readable-stream';
 import pipe from './index';
 import { promisify } from 'util';
 
-
-// jest.setTimeout(30 * 1000)
 describe('pipe(fn, opts)', () => {
   it(
     'emits callback in pipeline() after synchronous transform',
@@ -247,14 +245,6 @@ describe('pipe(fn, opts)', () => {
       return s;
     }
 
-    // This also behaves the same.
-    // await new Promise((resolve, reject) => {
-    //   r.pipe(pipe(first))
-    //     .pipe(pipe(second))
-    //     .pipe(pipe(third, 48))
-    //     .on('finish', resolve);
-    // });
-
     await asyncPipeline(
       r,
       pipe(first),
@@ -324,7 +314,7 @@ describe('pipe(fn, opts)', () => {
     await asyncPipeline(r, pipe(second, 99));
   });
 
-  it.only('resolves on bottlenecked concurrency with only "third" function pipe in the chain', async () => {
+  it('resolves on bottlenecked concurrency with only "third" function pipe in the chain', async () => {
     /**
      *
      * Stream Size 100
@@ -347,7 +337,7 @@ describe('pipe(fn, opts)', () => {
      *  Stream size 16 passes
      */
 
-    const r = Readable.from(getNumericalArray(17));
+    const r = Readable.from(getNumericalArray(100));
 
     const actual: string[] = [];
     async function third(s: string) {
@@ -355,7 +345,7 @@ describe('pipe(fn, opts)', () => {
       return s;
     }
 
-    await asyncPipeline(r, pipe(third, 1));
+    await asyncPipeline(r, pipe(third, 99));
   });
 
   it('resolves on bottlenecked concurrency with one function that returns nothing', async () => {
