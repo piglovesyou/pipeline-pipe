@@ -13,7 +13,9 @@ type Callback = (error?: Error, data?: any) => void;
 export type OnTransformFn = (data: any, callback: Callback) => void;
 
 const DEFAULT_MAX_PARALLEL = 10;
-const DEFAULT_HIGH_WATERMARK = 16;
+const DEFAULT_HIGH_WATERMARK = 16; // The issues seems to be here
+// https://stackoverflow.com/questions/50302881/buffering-data-in-memory-writable-final-hook-never-called
+// https://github.com/mafintosh/parallel-transform/issues/1
 
 export default class ParallelTransform extends Transform {
   private _destroyed: boolean;
@@ -56,6 +58,8 @@ export default class ParallelTransform extends Transform {
     this._top = 0;
     this._bottom = 0;
     this.ondrain = null;
+
+    // this.on('data', () => {}); // This fixes the issue for some reason.... :sad-panda:
   }
 
   destroy(): this {
