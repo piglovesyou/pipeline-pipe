@@ -37,7 +37,6 @@ export default class ParallelTransform extends Transform {
   constructor(ontransform: OnTransformFn, opts: ParallelTransformOptions) {
     if (opts.objectMode !== false) {
       opts.objectMode = true;
-      opts.objectMode = true;
     }
 
     const maxParallel = opts.maxParallel || DEFAULT_MAX_PARALLEL;
