@@ -43,7 +43,7 @@
     ]
   },
   "scripts": {
-    "_eslint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern \"**/*.test.ts\"",
+    "_eslint": "eslint --ext .ts --ignore-path .gitignore",
     "lint": "yarn _eslint .",
     "fix": "yarn _eslint --fix .",
     "test-watch": "yarn test --watch --notify",
