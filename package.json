@@ -37,16 +37,17 @@
     "typescript": "^4.2.3"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "npm run fix-js",
+    "*.{ts,js}": [
+      "yarn _eslint --fix",
       "git add --force"
     ]
   },
   "scripts": {
-    "lint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern \"**/*.test.ts\" .",
-    "fix": "yarn run lint --fix",
-    "test-watch": "yarn run test --watch --notify",
-    "test-cover": "yarn run test --coverage",
+    "_eslint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern \"**/*.test.ts\"",
+    "lint": "yarn _eslint .",
+    "fix": "yarn _eslint --fix .",
+    "test-watch": "yarn test --watch --notify",
+    "test-cover": "yarn test --coverage",
     "test": "yarn lint && tsc --noEmit && jest",
     "test-nolint": "tsc --noEmit && jest",
     "prepack": "tsc --declaration"
