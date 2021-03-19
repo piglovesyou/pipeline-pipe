@@ -1,6 +1,6 @@
 # pipeline-pipe [![npm version](https://badge.fury.io/js/pipeline-pipe.svg)](https://badge.fury.io/js/pipeline-pipe) [![Build Status](https://travis-ci.org/piglovesyou/pipeline-pipe.svg?branch=master)](https://travis-ci.org/piglovesyou/pipeline-pipe)
 
-This turns an async function into a parallel transform for [require('stream').pipeline](https://nodejs.org/api/stream.html#stream_stream_pipeline_source_transforms_destination_callback) in Node. 
+This turns an async function into a parallel transform for [require('stream').pipeline](https://nodejs.org/api/stream.html#stream_stream_pipeline_source_transforms_destination_callback) in Node.
 
 ## Why
 
@@ -20,7 +20,7 @@ npm install pipeline-pipe
 ## pipe(fn, opts)
 
 Example usage:
- 
+
 ```js
 // Example to scrape HTML and store titles of them in DB:
 
@@ -29,25 +29,25 @@ const pipe = require('pipeline-pipe');
 
 pipeline(
     Readable.from([1, 2, 3]),
-    
+
     // Request HTML asynchronously in 16 parallel
-    pipe(async postId => {                
+    pipe(async postId => {
       const json = await getPost(postId);
       return json;
     }, 16),
-    
+
     // Synchronous transformation as Array.prototype.map
     pipe(json => parseHTML(json.postBody).document.title),
-    
+
     // Synchronous transformation as Array.prototype.filter
     pipe(title => title.includes('important') ? title : null),
-    
+
     // Asynchronous in 4 parallel
     pipe(async title => {
       const result = await storeInDB(title), 4);
       console.info(result);
     }, 4)
-    
+
     (err) => console.info('All done!')
 );
 ```
@@ -77,7 +77,7 @@ A number can be passed to `opts`. `pipe(fn, 20)` is same as `pipe(fn, {maxParall
 ## Some utility functions
 
 ### pipeline(stream, stream, ...)
- 
+
 Just a promisified version of `require('stream').pipeline`. It requires Node v10+. Equivalent to:
 
 ```js
@@ -97,7 +97,7 @@ await pipeline(
     pipe(chunk => storeInDB(chunk)),
 );
 console.log('All done!');
-``` 
+```
 
 ### concat(size)
 
@@ -130,7 +130,7 @@ pipeline(
     Readable.from([1, 2, 3]),
     pipe(page => getPostsByPage(page)),
     pipe(json => json.posts),             // Returns an array of posts
-    pipe(split()),                        // Splits the array into each posts
+    split(),                        // Splits the array into each posts
     pipe(post => storeInDB(post.title)),  // Now the argument is a post
     (err) => console.info('All done!')
 );
