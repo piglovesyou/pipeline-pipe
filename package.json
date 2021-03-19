@@ -50,7 +50,8 @@
     "test-cover": "yarn test --coverage",
     "test": "yarn lint && tsc --noEmit && jest",
     "test-nolint": "tsc --noEmit && jest",
-    "prepack": "tsc --declaration"
+    "build": "tsc --declaration",
+    "prepack": "yarn lint && yarn build && yarn test",
   },
   "husky": {
     "hooks": {
