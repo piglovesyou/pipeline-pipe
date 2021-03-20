@@ -16,8 +16,9 @@ export default function pipe(
   ) {
     try {
       const returned = asyncTransformFn.call(this, data);
-      Promise.resolve(returned).then((resolved) =>
-        callback(undefined, resolved),
+      Promise.resolve(returned).then(
+        (resolved) => callback(undefined, resolved),
+        (error) => callback(error),
       );
     } catch (e) {
       callback(e);
