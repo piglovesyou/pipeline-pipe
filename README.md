@@ -1,4 +1,4 @@
-# pipeline-pipe [![npm version](https://badge.fury.io/js/pipeline-pipe.svg)](https://badge.fury.io/js/pipeline-pipe) [![Build Status](https://travis-ci.org/piglovesyou/pipeline-pipe.svg?branch=master)](https://travis-ci.org/piglovesyou/pipeline-pipe)
+# pipeline-pipe [![Node CI](https://github.com/piglovesyou/pipeline-pipe/actions/workflows/nodejs.yml/badge.svg)](https://github.com/piglovesyou/pipeline-pipe/actions/workflows/nodejs.yml) [![npm version](https://badge.fury.io/js/pipeline-pipe.svg)](https://badge.fury.io/js/pipeline-pipe) [![downloads](https://badgen.net/npm/dw/pipeline-pipe)](https://www.npmjs.com/package/pipeline-pipe)
 
 This turns an async function into a parallel transform for [require('stream').pipeline](https://nodejs.org/api/stream.html#stream_stream_pipeline_source_transforms_destination_callback) in Node.
 
