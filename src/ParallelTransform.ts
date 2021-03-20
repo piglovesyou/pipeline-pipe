@@ -56,8 +56,6 @@ export default class ParallelTransform extends Transform {
     this._top = 0;
     this._bottom = 0;
     this.ondrain = null;
-
-    // this.on('data', () => {}); // This fixes the issue for some reason.... :sad-panda:
   }
 
   destroy(): this {
