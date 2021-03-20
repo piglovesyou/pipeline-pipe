@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle, no-param-reassign, no-plusplus, no-continue */
-
-import { Transform, TransformOptions } from 'readable-stream';
+import { Transform } from 'stream';
+import { TransformOptions } from 'readable-stream';
 import cyclist, { Cyclist } from 'cyclist';
 
 export type ParallelTransformOptions = TransformOptions & {
@@ -105,13 +105,37 @@ export default class ParallelTransform extends Transform {
         const popped = this._buffer.pop();
         this._bottom++;
         if (popped === null) continue;
-        this.push(popped);
+        const pipeNotFull = this.push(popped);
+
+        if (!pipeNotFull) {
+          this.once('resume', () => {
+            this._drain();
+          });
+
+          this.once('readable', () => {
+            this.resume();
+          });
+
+          break;
+        }
       }
     } else {
       while (this._buffer.get(this._bottom) !== undefined) {
         const deleted = this._buffer.del(this._bottom++);
         if (deleted === null) continue;
-        this.push(deleted);
+        const pipeNotFull = this.push(deleted);
+
+        if (!pipeNotFull) {
+          this.once('resume', () => {
+            this._drain();
+          });
+
+          this.once('readable', () => {
+            this.resume();
+          });
+
+          break;
+        }
       }
     }
 
