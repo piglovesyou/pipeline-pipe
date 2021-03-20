@@ -108,14 +108,7 @@ export default class ParallelTransform extends Transform {
         const pipeNotFull = this.push(popped);
 
         if (!pipeNotFull) {
-          this.once('resume', () => {
-            this._drain();
-          });
-
-          this.once('readable', () => {
-            this.resume();
-          });
-
+          this._onPipeFull();
           break;
         }
       }
@@ -126,14 +119,7 @@ export default class ParallelTransform extends Transform {
         const pipeNotFull = this.push(deleted);
 
         if (!pipeNotFull) {
-          this.once('resume', () => {
-            this._drain();
-          });
-
-          this.once('readable', () => {
-            this.resume();
-          });
-
+          this._onPipeFull();
           break;
         }
       }
@@ -149,5 +135,22 @@ export default class ParallelTransform extends Transform {
   _drained() {
     const diff = this._top - this._bottom;
     return this._finishing ? !diff : diff < this._maxParallel;
+  }
+
+  _onPipeFull() {
+    if (!this.listeners('resume').includes(this._onResume)) {
+      this.once('resume', this._onResume);
+    }
+    if (!this.listeners('readable').includes(this._onReadable)) {
+      this.once('readable', this._onReadable);
+    }
+  }
+
+  _onResume() {
+    this._drain();
+  }
+
+  _onReadable() {
+    this.resume();
   }
 }
