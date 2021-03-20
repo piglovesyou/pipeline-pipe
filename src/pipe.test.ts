@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import assert from 'assert';
 import { Readable } from 'stream';
 import asyncPipeline from './pipeline';
