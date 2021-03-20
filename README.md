@@ -1,15 +1,15 @@
 # pipeline-pipe [![Node CI](https://github.com/piglovesyou/pipeline-pipe/actions/workflows/nodejs.yml/badge.svg)](https://github.com/piglovesyou/pipeline-pipe/actions/workflows/nodejs.yml) [![npm version](https://badge.fury.io/js/pipeline-pipe.svg)](https://badge.fury.io/js/pipeline-pipe) [![downloads](https://badgen.net/npm/dw/pipeline-pipe)](https://www.npmjs.com/package/pipeline-pipe)
 
-This turns an async function into a parallel transform for [require('stream').pipeline](https://nodejs.org/api/stream.html#stream_stream_pipeline_source_transforms_destination_callback) in Node.
+Parallel transform and some utilities for Node Object Stream lovers
 
 ## Why
 
-* Accepts async functions
-* Fixes [mafintosh/parallel-transform/issues/4](https://github.com/mafintosh/parallel-transform/issues/4) to work with `require('stream').pipeline`
-* TypeScript Definition (with the pure TypeScript reimplementation)
+* Parallel transform accepting async function
+* Fixes [mafintosh/parallel-transform/issues/4](https://github.com/mafintosh/parallel-transform/issues/4) to work with [`import { pipeline } from 'stream'`](https://nodejs.org/api/stream.html#stream_stream_pipeline_source_transforms_destination_callback)
+* TypeScript Definition with the pure TypeScript reimplementation
 * Add tests
-* A few utility functions
-* [The blog post](https://dev.to/piglovesyou/pipeline-pipe-fun-way-to-get-batching-done-with-node-stream-42cb)
+* Utility functions
+* [Blog post](https://dev.to/piglovesyou/pipeline-pipe-fun-way-to-get-batching-done-with-node-stream-42cb)
 
 ## Install
 
@@ -24,7 +24,7 @@ Example usage:
 ```js
 // Example to scrape HTML and store titles of them in DB:
 
-const {pipeline, Readable} = require('stream');
+const { pipeline, Readable } = require('stream');
 const pipe = require('pipeline-pipe');
 
 pipeline(
@@ -78,18 +78,18 @@ A number can be passed to `opts`. `pipe(fn, 20)` is same as `pipe(fn, {maxParall
 
 ### pipeline(stream, stream, ...)
 
-Just a promisified version of `require('stream').pipeline`. It requires Node v10+. Equivalent to:
+A promisified version of `require('stream').pipeline`. Equivalent to:
 
 ```js
-const {promisify} = require('util');
-const {pipeline: _pipeline} = require('stream');
+const { promisify } = require('util');
+const { pipeline: _pipeline } = require('stream');
 const pipeline = promisify(_pipeline);
 ```
 
 Example:
 
 ```js
-const {pipeline, pipe} = require('pipeline-pipe');
+const { pipeline, pipe } = require('pipeline-pipe');
 
 await pipeline(
     readable,
@@ -105,8 +105,8 @@ It concatenates sequential data to be specified size of array. This is useful wh
 
 Example:
 ```javascript
-const {pipeline} = require('stream');
-const {concat, pipe} = require('pipeline-pipe');
+const { pipeline } = require('stream');
+const { concat, pipe } = require('pipeline-pipe');
 
 pipeline(
     Readable.from([1, 2, 3, 4, 5]),
@@ -123,15 +123,15 @@ pipeline(
 Creates a `Transform` to split incoming `Array` chunk into pieces to subsequent streams.
 
 ```js
-const {pipeline} = require('stream');
-const {split, pipe} = require('pipeline-pipe');
+const { pipeline } = require('stream');
+const { split, pipe } = require('pipeline-pipe');
 
 pipeline(
     Readable.from([1, 2, 3]),
     pipe(page => getPostsByPage(page)),
-    pipe(json => json.posts),             // Returns an array of posts
-    split(),                        // Splits the array into each posts
-    pipe(post => storeInDB(post.title)),  // Now the argument is a post
+    pipe(json => json.posts),               // Returns an array of posts
+    split(),                                // Splits the array into each posts
+    pipe(post => storeInDB(post.title)),    // Now the argument is a post
     (err) => console.info('All done!')
 );
 ```
