@@ -1,6 +1,6 @@
 {
   "name": "pipeline-pipe",
-  "version": "0.1.4",
+  "version": "0.2.1",
   "engines": {
     "node": ">=10.0.0"
   },
