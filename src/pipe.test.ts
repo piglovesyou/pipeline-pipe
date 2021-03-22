@@ -60,6 +60,67 @@ describe('pipe(fn, opts)', () => {
     10 * 1000,
   );
 
+  it(
+    'emits callback in pipeline() after synchronous throw',
+    async () => {
+      const sample = [2, 3, 4, 5, 6];
+      const expected = [2];
+      const actual: number[] = [];
+
+      await new Promise<void>((resolve, reject) => {
+        pipeline(
+          Readable.from(sample),
+          pipe(function (n) {
+            actual.push(n);
+            if (n === 2) {
+              throw new Error(`Fail ${n}`);
+            }
+          }),
+          (err) => {
+            if (err) return resolve();
+            reject(new Error('should not happen'));
+          },
+        );
+      });
+
+      assert.deepStrictEqual(actual, expected);
+    },
+    10 * 1000,
+  );
+
+  it(
+    'emits callback in pipeline() after asynchronous reject',
+    async () => {
+      const sample = [2, 3, 4, 5, 6];
+      const expected = [2];
+      const actual: number[] = [];
+
+      await new Promise<void>((resolve, reject) => {
+        pipeline(
+          Readable.from(sample),
+          pipe(function (n) {
+            return new Promise<void>((resolve, reject) => {
+              setTimeout(() => {
+                actual.push(n);
+                if (n === 2) {
+                  reject(new Error(`Fail ${n}`));
+                }
+                resolve();
+              }, n);
+            });
+          }, 1),
+          (err) => {
+            if (err) return resolve();
+            reject(new Error('should not happen'));
+          },
+        );
+      });
+
+      assert.deepStrictEqual(actual, expected);
+    },
+    10 * 1000,
+  );
+
   it('fixes mafintosh/parallel-transform##4, emit "finish" after all buffer is consumed', async () => {
     const expectedArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     const actualArray: number[] = [];

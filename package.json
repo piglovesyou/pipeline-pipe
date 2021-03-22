@@ -6,7 +6,8 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "git@github.com:piglovesyou/pipeline-pipe.git",
+  "repository": "https://github.com/piglovesyou/pipeline-pipe.git",
+  "bugs": "https://github.com/piglovesyou/pipeline-pipe/issues",
   "license": "MIT",
   "description": "Creates a parallel transform from async function",
   "keywords": [
